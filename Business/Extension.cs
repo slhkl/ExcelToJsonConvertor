@@ -30,5 +30,32 @@ namespace Business
 
             return jsonValue;
         }
+
+        public static string ToJson(this Stream excelFile)
+        {
+            string jsonValue = "", tempFile = "";
+
+            try
+            {
+                tempFile = Path.GetTempFileName();
+
+                var converter = new Converter(() => excelFile);
+                var convertOptions = converter.GetPossibleConversions()["json"].ConvertOptions;
+                converter.Convert(tempFile, convertOptions);
+
+                jsonValue = File.ReadAllText(tempFile);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                    File.Delete(tempFile);
+            }
+
+            return jsonValue;
+        }
     }
 }
