@@ -1,4 +1,5 @@
 ﻿using GroupDocs.Conversion;
+using System.Text;
 
 namespace Business
 {
@@ -33,26 +34,20 @@ namespace Business
 
         public static string ToJson(this Stream excelFile)
         {
-            string jsonValue = "", tempFile = "";
-
+            string jsonValue = "";
             try
             {
-                tempFile = Path.GetTempFileName();
-
+                MemoryStream stream = new MemoryStream();
                 var converter = new Converter(() => excelFile);
                 var convertOptions = converter.GetPossibleConversions()["json"].ConvertOptions;
-                converter.Convert(tempFile, convertOptions);
+                converter.Convert(() => stream, convertOptions);
 
-                jsonValue = File.ReadAllText(tempFile);
+                var a = stream.ToArray();
+                jsonValue = Encoding.UTF8.GetString(a, 0, a.Length);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                    File.Delete(tempFile);
             }
 
             return jsonValue;
