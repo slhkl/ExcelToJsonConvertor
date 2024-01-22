@@ -42,8 +42,8 @@ namespace Business
                 var convertOptions = converter.GetPossibleConversions()["json"].ConvertOptions;
                 converter.Convert(() => stream, convertOptions);
 
-                var a = stream.ToArray();
-                jsonValue = Encoding.UTF8.GetString(a, 0, a.Length);
+                var jsonValueByteArray = stream.ToArray();
+                jsonValue = Encoding.UTF8.GetString(jsonValueByteArray, 0, jsonValueByteArray.Length);
             }
             catch (Exception ex)
             {
